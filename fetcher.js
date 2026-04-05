@@ -10,16 +10,16 @@ const FEEDS = [
 
 async function fetchLatestNews(limitPerFeed = 1) {
     const allNews = [];
-    const TWENTY_FOUR_HOURS_AGO = Date.now() - (24 * 60 * 60 * 1000);
+    const SIX_HOURS_AGO = Date.now() - (6 * 60 * 60 * 1000);
     
     for (const url of FEEDS) {
         try {
             const feed = await parser.parseURL(url);
             
-            // Only take items published within the last 24 hours
+            // Only take items published within the last 6 hours
             const newItems = feed.items.filter(item => {
                 const pubTimestamp = new Date(item.pubDate).getTime();
-                return pubTimestamp > TWENTY_FOUR_HOURS_AGO;
+                return pubTimestamp > SIX_HOURS_AGO;
             });
 
             console.log(`[Fetcher] Found ${newItems.length} fresh articles in ${feed.title}`);
