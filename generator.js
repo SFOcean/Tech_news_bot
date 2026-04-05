@@ -42,7 +42,7 @@ async function generateCaptions(article) {
         
         const response = await axios.post(url, payload, {
             headers: { 'Content-Type': 'application/json' },
-            timeout: 15000 // 15s timeout
+            timeout: 30000 // Increased to 30s as generating 4 captions takes time
         });
         
         const text = response.data.candidates[0].content.parts[0].text;
@@ -52,13 +52,14 @@ async function generateCaptions(article) {
         if (jsonMatch) {
             return JSON.parse(jsonMatch[0]);
         }
-        throw new Error("Failed to parse JSON response from Gemini");
+        throw new Error("Failed to parse JSON response from Gemini: " + text);
     } catch (error) {
         console.error('Error generating captions via REST:', error.message);
         return {
-            linkedin: "Error generating LinkedIn caption.",
-            x: "Error generating X caption.",
-            reddit: "Error generating Reddit caption."
+            linkedin: "⚠️ Error generating LinkedIn draft. The AI may have timed out.",
+            x: "⚠️ Error generating X draft. The AI may have timed out.",
+            reddit: "⚠️ Error generating Reddit draft. The AI may have timed out.",
+            public_post: "⚠️ Looks like the AI engine took too long to analyze this article. We'll catch the next one!"
         };
     }
 }
