@@ -36,34 +36,45 @@ async function generateCaptions(article) {
     }
     `;
 
-    try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-        const payload = {
-            contents: [{ parts: [{ text: prompt }] }]
-        };
-        
-        const response = await axios.post(url, payload, {
-            headers: { 'Content-Type': 'application/json' },
-            timeout: 30000 // Increased to 30s as generating 4 captions takes time
-        });
-        
-        const text = response.data.candidates[0].content.parts[0].text;
-        
-        // Extract JSON 
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
+    let attempts = 0;
+    while (attempts < 2) {
+        try {
+            attempts++;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+            
+            const response = await axios.post(url, payload, {
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 30000 // 30s timeout
+            });
+            
+            const text = response.data.candidates[0].content.parts[0].text;
+            
+            // Extract JSON 
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            }
+            throw new Error("Failed to parse JSON response from Gemini: " + text);
+        } catch (error) {
+            const isRateLimit = error.response && error.response.status === 429;
+            if (isRateLimit && attempts < 2) {
+                console.warn('⚠️ Hit API Rate Limit (429). Waiting 15 seconds before retrying...');
+                await new Promise(res => setTimeout(res, 15000));
+                continue;
+            }
+            
+            console.error('Error generating captions via REST:', error.message);
+            return {
+                linkedin: "⚠️ Error: " + error.message + (isRateLimit ? " (Rate Limit Reached)" : ""),
+                x: "⚠️ Error: " + error.message,
+                reddit: "⚠️ Error: " + error.message,
+                public_icon: isRateLimit ? "⏳" : "⚠️",
+                public_post: `Looks like the AI engine encountered an error: ${error.message} ${isRateLimit ? "(Too many requests during testing!)" : ""}`
+            };
         }
-        throw new Error("Failed to parse JSON response from Gemini: " + text);
-    } catch (error) {
-        console.error('Error generating captions via REST:', error.message);
-        return {
-            linkedin: "⚠️ Error: " + error.message,
-            x: "⚠️ Error: " + error.message,
-            reddit: "⚠️ Error: " + error.message,
-            public_icon: "⚠️",
-            public_post: "Looks like the AI engine encountered an error: " + error.message
-        };
     }
 }
 
