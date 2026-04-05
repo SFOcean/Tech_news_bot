@@ -25,7 +25,8 @@ async function sendTelegramMessage(targetId, messageHtml) {
             disable_web_page_preview: true
         }, { timeout: 10000 });
     } catch (error) {
-        console.error(`Error sending to ${targetId}:`, error.message);
+        const details = error.response && error.response.data ? JSON.stringify(error.response.data) : error.message;
+        console.error(`[Telegram Error] Failed sending to ${targetId}:`, details);
     }
 }
 
