@@ -20,9 +20,9 @@ async function sendNotification(article, captions) {
     }
 
     const platforms = [
-        { name: 'LinkedIn', icon: '🔵', key: 'linkedin' },
-        { name: 'X (Twitter)', icon: '🐦', key: 'x' },
-        { name: 'Reddit', icon: '👽', key: 'reddit' }
+        { name: 'Executive Summary', icon: '💼', key: 'executive' },
+        { name: 'Quick Take', icon: '⚡', key: 'quick' },
+        { name: 'Deep Dive', icon: '🔬', key: 'deep_dive' }
     ];
 
     for (const platform of platforms) {
