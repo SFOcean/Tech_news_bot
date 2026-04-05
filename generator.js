@@ -58,11 +58,11 @@ async function generateCaptions(article) {
     } catch (error) {
         console.error('Error generating captions via REST:', error.message);
         return {
-            linkedin: "⚠️ Error generating LinkedIn draft. The AI may have timed out.",
-            x: "⚠️ Error generating X draft. The AI may have timed out.",
-            reddit: "⚠️ Error generating Reddit draft. The AI may have timed out.",
+            linkedin: "⚠️ Error: " + error.message,
+            x: "⚠️ Error: " + error.message,
+            reddit: "⚠️ Error: " + error.message,
             public_icon: "⚠️",
-            public_post: "Looks like the AI engine took too long to analyze this article. We'll catch the next one!"
+            public_post: "Looks like the AI engine encountered an error: " + error.message
         };
     }
 }
