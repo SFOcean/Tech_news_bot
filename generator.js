@@ -37,7 +37,8 @@ async function generateCaptions(article) {
         };
         
         const response = await axios.post(url, payload, {
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 15000 // 15s timeout
         });
         
         const text = response.data.candidates[0].content.parts[0].text;

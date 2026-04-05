@@ -1,5 +1,7 @@
 const Parser = require('rss-parser');
-const parser = new Parser();
+const parser = new Parser({
+    timeout: 10000 // 10s timeout to prevent hanging
+});
 
 const FEEDS = [
     'https://venturebeat.com/category/ai/feed/',
