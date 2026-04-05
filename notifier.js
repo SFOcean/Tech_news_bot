@@ -46,7 +46,8 @@ async function sendNotification(article, captions) {
     }
 
     // 2. Public Channel Broadcast
-    const publicMsg = `📢 <b>${escapeHTML(article.title)}</b>\n\n${escapeHTML(captions.public_post)}\n\n<b>Read more:</b>\n${article.link}`;
+    const icon = captions.public_icon || '📢';
+    const publicMsg = `${icon} <b>${escapeHTML(article.title)}</b>\n\n${escapeHTML(captions.public_post)}\n\n<b>Read more:</b>\n${article.link}`;
     await sendTelegramMessage(publicChannelId, publicMsg);
     
     console.log('[Notifier] Broadcast complete.');

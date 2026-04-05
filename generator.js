@@ -12,7 +12,7 @@ async function generateCaptions(article) {
     }
 
     const prompt = `
-    You are an expert AI news curator and social media manager. I will give you a news article summary. Provide exactly 4 distinct pieces of content based on this article.
+    You are an expert AI news curator and social media manager. I will give you a news article summary. Provide exactly 5 distinct pieces of content based on this article.
     
     Article Title: ${article.title}
     Article Snippet: ${article.contentSnippet}
@@ -23,13 +23,15 @@ async function generateCaptions(article) {
     3. reddit: Conversational, community-focused, no corporate jargon. Like you're explaining it to an enthusiast. (Max 100 words).
     
     Requirements for Public Newsletter (Telegram Channel):
-    4. public_post: A single, compact, natural, and informative yet attractive piece of writing summarizing the news. It should be engaging for a general tech audience without being overly formal. Do not include boilerplate greetings. (Max 150 words).
+    4. public_icon: A single, highly relevant emoji that visually represents the core topic of the article (e.g., 🤖 for AI, 🚀 for startups, 💻 for software).
+    5. public_post: A single, compact, natural, and informative yet attractive piece of writing summarizing the news. It should be engaging for a general tech audience without being overly formal. Do not include boilerplate greetings. (Max 150 words).
     
     Output strictly in this JSON format:
     {
       "linkedin": "...",
       "x": "...",
       "reddit": "...",
+      "public_icon": "...",
       "public_post": "..."
     }
     `;
@@ -59,7 +61,8 @@ async function generateCaptions(article) {
             linkedin: "⚠️ Error generating LinkedIn draft. The AI may have timed out.",
             x: "⚠️ Error generating X draft. The AI may have timed out.",
             reddit: "⚠️ Error generating Reddit draft. The AI may have timed out.",
-            public_post: "⚠️ Looks like the AI engine took too long to analyze this article. We'll catch the next one!"
+            public_icon: "⚠️",
+            public_post: "Looks like the AI engine took too long to analyze this article. We'll catch the next one!"
         };
     }
 }
