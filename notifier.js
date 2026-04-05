@@ -15,36 +15,39 @@ function escapeHTML(text) {
 
 async function sendNotification(article, captions) {
     if (!token || token === 'your_telegram_bot_token_here' || !chatId || chatId === 'your_telegram_chat_id_here') {
-        console.log('\n--- MOCK TELEGRAM NOTIFICATION (Bot not configured) ---');
-        console.log(`📰 **${article.title}**\n🔗 ${article.link}\n`);
+        console.log('\n--- MOCK TELEGRAM NOTIFICATIONS ---');
         return;
     }
 
-    const message = `
-📰 <b>${escapeHTML(article.title)}</b>
-🔗 <a href="${escapeHTML(article.link)}">Read Full Article</a>
+    const platforms = [
+        { name: 'LinkedIn', icon: '🔵', key: 'linkedin' },
+        { name: 'X (Twitter)', icon: '🐦', key: 'x' },
+        { name: 'Reddit', icon: '👽', key: 'reddit' }
+    ];
 
-🔵 <b>LinkedIn Draft:</b>
-${escapeHTML(captions.linkedin)}
+    for (const platform of platforms) {
+        const message = `
+${platform.icon} <b>${platform.name} Draft:</b>
+<i>${escapeHTML(article.title)}</i>
 
-🐦 <b>X (Twitter) Draft:</b>
-${escapeHTML(captions.x)}
+${escapeHTML(captions[platform.key])}
 
-👽 <b>Reddit Draft:</b>
-${escapeHTML(captions.reddit)}
-    `;
+<b>Raw Link:</b>
+${article.link}
+        `;
 
-    try {
-        const url = `https://api.telegram.org/bot${token}/sendMessage`;
-        await axios.post(url, {
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        });
-        console.log('Successfully sent notification to Telegram.');
-    } catch (error) {
-        console.error('Error sending Telegram message:', error.response ? error.response.data : error.message);
+        try {
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+            await axios.post(url, {
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true
+            });
+            console.log(`[Notifier] Successfully sent ${platform.name} draft to Telegram.`);
+        } catch (error) {
+            console.error(`Error sending ${platform.name} message:`, error.message);
+        }
     }
 }
 
