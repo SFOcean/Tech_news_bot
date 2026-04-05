@@ -12,18 +12,26 @@ async function generateCaptions(article) {
     }
 
     const prompt = `
-    You are an expert AI news curator broadcasting to a public tech community. I will give you a news article summary. Provide exactly 3 distinct perspectives or "takes" based on this article for the audience.
+    You are an expert AI news curator and social media manager. I will give you a news article summary. Provide exactly 6 distinct variations of content based on this article.
     
     Article Title: ${article.title}
     Article Snippet: ${article.contentSnippet}
     
-    Requirements:
-    1. executive: Professional, insightful, high-level summary of the business impact. (Max 150 words).
-    2. quick: A punchy, concise, exciting summary for fast readers. (Under 250 characters).
-    3. deep_dive: Conversational, community-focused take on the technical details or implications. No corporate jargon. (Max 100 words).
+    Requirements for Private Drafts (Social Media):
+    1. linkedin: Professional, insightful, asks a question to drive engagement. (Max 150 words). Include #LinkedIn tags.
+    2. x: Punchy, concise, exciting. (Under 250 characters). Include minimal, relevant hashtags.
+    3. reddit: Conversational, community-focused, no corporate jargon. Like you're explaining it to an enthusiast. (Max 100 words).
+    
+    Requirements for Public Newsletter (Telegram Channel):
+    4. executive: Professional, insightful, high-level summary of the business impact. (Max 150 words).
+    5. quick: A punchy, concise, exciting summary for fast readers. (Under 250 characters).
+    6. deep_dive: Conversational, community-focused take on the technical details or implications. No corporate jargon. (Max 100 words).
     
     Output strictly in this JSON format:
     {
+      "linkedin": "...",
+      "x": "...",
+      "reddit": "...",
       "executive": "...",
       "quick": "...",
       "deep_dive": "..."
