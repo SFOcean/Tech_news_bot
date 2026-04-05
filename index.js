@@ -40,7 +40,12 @@ async function runAutomation() {
 
 // Run immediately if executed directly
 if (require.main === module) {
-    runAutomation();
+    runAutomation()
+        .then(() => process.exit(0))
+        .catch(err => {
+            console.error(err);
+            process.exit(1);
+        });
 }
 
 module.exports = { runAutomation };
