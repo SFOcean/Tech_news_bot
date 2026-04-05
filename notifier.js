@@ -45,17 +45,9 @@ async function sendNotification(article, captions) {
         await sendTelegramMessage(chatId, msg);
     }
 
-    // 2. Public Takes (Channel)
-    const publicTakes = [
-        { name: 'Executive Summary', icon: '💼', key: 'executive' },
-        { name: 'Quick Take', icon: '⚡', key: 'quick' },
-        { name: 'Deep Dive', icon: '🔬', key: 'deep_dive' }
-    ];
-
-    for (const take of publicTakes) {
-        const msg = `📢 <b>${take.name}</b>\n<i>${escapeHTML(article.title)}</i>\n\n${escapeHTML(captions[take.key])}\n\n<b>Read more:</b>\n${article.link}`;
-        await sendTelegramMessage(publicChannelId, msg);
-    }
+    // 2. Public Channel Broadcast
+    const publicMsg = `📢 <b>${escapeHTML(article.title)}</b>\n\n${escapeHTML(captions.public_post)}\n\n<b>Read more:</b>\n${article.link}`;
+    await sendTelegramMessage(publicChannelId, publicMsg);
     
     console.log('[Notifier] Broadcast complete.');
 }

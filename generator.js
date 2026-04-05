@@ -12,7 +12,7 @@ async function generateCaptions(article) {
     }
 
     const prompt = `
-    You are an expert AI news curator and social media manager. I will give you a news article summary. Provide exactly 6 distinct variations of content based on this article.
+    You are an expert AI news curator and social media manager. I will give you a news article summary. Provide exactly 4 distinct pieces of content based on this article.
     
     Article Title: ${article.title}
     Article Snippet: ${article.contentSnippet}
@@ -23,18 +23,14 @@ async function generateCaptions(article) {
     3. reddit: Conversational, community-focused, no corporate jargon. Like you're explaining it to an enthusiast. (Max 100 words).
     
     Requirements for Public Newsletter (Telegram Channel):
-    4. executive: Professional, insightful, high-level summary of the business impact. (Max 150 words).
-    5. quick: A punchy, concise, exciting summary for fast readers. (Under 250 characters).
-    6. deep_dive: Conversational, community-focused take on the technical details or implications. No corporate jargon. (Max 100 words).
+    4. public_post: A single, compact, natural, and informative yet attractive piece of writing summarizing the news. It should be engaging for a general tech audience without being overly formal. Do not include boilerplate greetings. (Max 150 words).
     
     Output strictly in this JSON format:
     {
       "linkedin": "...",
       "x": "...",
       "reddit": "...",
-      "executive": "...",
-      "quick": "...",
-      "deep_dive": "..."
+      "public_post": "..."
     }
     `;
 
