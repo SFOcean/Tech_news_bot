@@ -19,10 +19,15 @@ async function fetchLatestNews(limitPerFeed = 1) {
             const feed = await parser.parseURL(url);
             
             // Only take items published within the last 4 hours
-            const newItems = feed.items.filter(item => {
+            let newItems = feed.items.filter(item => {
                 const pubTimestamp = new Date(item.pubDate).getTime();
                 return pubTimestamp > FOUR_HOURS_AGO;
             });
+
+            // Enforce limit per feed
+            if (limitPerFeed && limitPerFeed > 0) {
+                newItems = newItems.slice(0, limitPerFeed);
+            }
 
             console.log(`[Fetcher] Found ${newItems.length} fresh articles in ${feed.title}`);
 

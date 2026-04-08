@@ -29,7 +29,9 @@ async function runAutomation() {
             console.log('Sending update to Telegram...');
             await sendNotification(article, captions);
             
-            await delay(2000); 
+            // Wait 15 seconds to avoid API rate limits on Gemini and Telegram
+            console.log('Waiting 15 seconds to prevent rate limits...');
+            await delay(15000); 
         } catch (err) {
             console.error(`Failed to process article "${article.title}":`, err.message);
         }

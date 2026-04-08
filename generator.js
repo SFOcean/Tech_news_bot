@@ -37,10 +37,10 @@ async function generateCaptions(article) {
     `;
 
     let attempts = 0;
-    while (attempts < 2) {
+    while (attempts < 3) {
         try {
             attempts++;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }]
             };
@@ -59,20 +59,20 @@ async function generateCaptions(article) {
             }
             throw new Error("Failed to parse JSON response from Gemini: " + text);
         } catch (error) {
-            const isRateLimit = error.response && error.response.status === 429;
-            if (isRateLimit && attempts < 2) {
-                console.warn('⚠️ Hit API Rate Limit (429). Waiting 15 seconds before retrying...');
+            const isRetryable = error.response && (error.response.status === 429 || error.response.status === 503);
+            if (isRetryable && attempts < 3) {
+                console.warn(`⚠️ Hit API Error (${error.response.status}). Waiting 15 seconds before retrying...`);
                 await new Promise(res => setTimeout(res, 15000));
                 continue;
             }
             
             console.error('Error generating captions via REST:', error.message);
             return {
-                linkedin: "⚠️ Error: " + error.message + (isRateLimit ? " (Rate Limit Reached)" : ""),
+                linkedin: "⚠️ Error: " + error.message + (isRetryable ? " (API Busy/Rate Limit)" : ""),
                 x: "⚠️ Error: " + error.message,
                 reddit: "⚠️ Error: " + error.message,
-                public_icon: isRateLimit ? "⏳" : "⚠️",
-                public_post: `Looks like the AI engine encountered an error: ${error.message} ${isRateLimit ? "(Too many requests during testing!)" : ""}`
+                public_icon: isRetryable ? "⏳" : "⚠️",
+                public_post: `Looks like the AI engine encountered an error: ${error.message} ${isRetryable ? "(Temporary API issue!)" : ""}`
             };
         }
     }
