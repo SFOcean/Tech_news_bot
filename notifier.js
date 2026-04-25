@@ -31,21 +31,9 @@ async function sendTelegramMessage(targetId, messageHtml) {
 }
 
 async function sendNotification(article, captions) {
-    console.log('[Notifier] Dispatching dual-broadcast...');
+    console.log('[Notifier] Dispatching broadcast...');
 
-    // 1. Private Drafts (Social Media)
-    const privateDrafts = [
-        { name: 'LinkedIn', icon: '🔵', key: 'linkedin' },
-        { name: 'X (Twitter)', icon: '🐦', key: 'x' },
-        { name: 'Reddit', icon: '👽', key: 'reddit' }
-    ];
-
-    for (const draft of privateDrafts) {
-        const msg = `🔒 <b>PRIVATE DRAFT: ${draft.name}</b>\n<i>${escapeHTML(article.title)}</i>\n\n${escapeHTML(captions[draft.key])}\n\n<b>Raw Link:</b>\n${article.link}`;
-        await sendTelegramMessage(chatId, msg);
-    }
-
-    // 2. Public Channel Broadcast
+    // Public Channel Broadcast
     const icon = captions.public_icon || '📢';
     const publicMsg = `${icon} <b>${escapeHTML(article.title)}</b>\n\n${escapeHTML(captions.public_post)}\n\n<b>Read more:</b>\n${article.link}`;
     await sendTelegramMessage(publicChannelId, publicMsg);
